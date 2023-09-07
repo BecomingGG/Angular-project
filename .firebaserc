@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "project-angular-22aa2": {
+      "hosting": {
+        "Project_angular": [
+          "project-angular-22aa2"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "project-angular-22aa2"
+  }
+}
