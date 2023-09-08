@@ -1,0 +1,53 @@
+<section class="wrapper">
+  <div class="form">
+    <h1>Create Post</h1>
+    <div class="wrap">
+      <aside class="left">
+        <mat-form-field class="titleInput">
+          <mat-label>Title</mat-label>
+          <input
+            matNativeControl
+            placeholder="Enter Post Title"
+            [(ngModel)]="title"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Post Description</mat-label>
+          <textarea
+            matNativeControl
+            placeholder="Enter Post Description"
+            [(ngModel)]="description"
+          ></textarea>
+        </mat-form-field>
+
+        <input
+          #PhotoInput
+          hidden="true"
+          type="file"
+          onclick="this.value=null"
+          (change)="onImageInputChange($event)"
+          accept=".png, .jpg"
+        />
+        <button mat-flat-button color="primary" (click)="PhotoInput.click()">
+          Upload Post Photo
+        </button>
+        <button
+          [disabled]="created"
+          mat-flat-button
+          color="accent"
+          (click)="createPost()"
+          class="imageUpload"
+        >
+          CreatePost
+        </button>
+      </aside>
+      <aside class="right">
+        <mat-card>
+          <mat-card-title>{{ title }}</mat-card-title>
+          <img mat-card-image [src]="imageURL" alt="post image" />
+          <mat-card-content>{{ description }}</mat-card-content>
+        </mat-card>
+      </aside>
+    </div>
+  </div>
+</section>

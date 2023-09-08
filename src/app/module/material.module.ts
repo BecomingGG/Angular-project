@@ -10,6 +10,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @NgModule({
   declarations: [],
@@ -24,6 +26,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatFormFieldModule,
     MatCardModule,
     MatMenuModule,
+    MatSelectModule,
+    TextFieldModule,
   ],
   exports: [
     MatButtonModule,
@@ -35,6 +39,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatFormFieldModule,
     MatCardModule,
     MatMenuModule,
+    MatSelectModule,
+    TextFieldModule,
   ],
 })
 export class MaterialModule {}

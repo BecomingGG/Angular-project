@@ -13,9 +13,13 @@ section.wrapper {
     row-gap: 10px;
     padding: 25px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 7px;
+    .recovery {
+      a {
+        text-decoration: none;
+      }
+    }
   }
 }
-
 .google-btn {
   margin: 25px;
   width: 80%;

@@ -2,13 +2,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
   AuthComponent,
+  CreatePostComponent,
   HomepageComponent,
   NotfoundComponent,
+  RecoveryComponent,
   RegisterComponent,
   SettingsComponent,
   VerifyComponent,
 } from './views';
-import { isUserAuth, isUserAuthed } from './services';
+import { PostService, isUserAuth, isUserAuthed } from './services';
 
 const routes: Routes = [
   {
@@ -27,8 +29,18 @@ const routes: Routes = [
     canActivate: [isUserAuthed],
   },
   {
+    path: 'recovery',
+    component: RecoveryComponent,
+    canActivate: [isUserAuthed],
+  },
+  {
     path: 'settings',
     component: SettingsComponent,
+    canActivate: [isUserAuth],
+  },
+  {
+    path: 'create_post',
+    component: CreatePostComponent,
     canActivate: [isUserAuth],
   },
   {

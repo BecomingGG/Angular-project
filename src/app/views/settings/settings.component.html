@@ -1,1 +1,30 @@
-<p>settings works!</p>
+<section class="wrapper">
+  <div class="form">
+    <div class="register">
+      <H1>Update User</H1>
+      <div class="form-group">
+        <mat-form-field>
+          <mat-label>Fullname</mat-label>
+          <input
+            matNativeControl
+            type="text"
+            placeholder="Enter your Fullname"
+            [(ngModel)]="name"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Update Photo URL</mat-label>
+          <input
+            matNativeControl
+            type="text"
+            placeholder="Enter your Photo URL"
+            [(ngModel)]="photoURL"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <button mat-raised-button (click)="update()" [disabled]="updated">
+      Update
+    </button>
+  </div>
+</section>

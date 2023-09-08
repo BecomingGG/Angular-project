@@ -28,12 +28,39 @@
       </button>
       <span>Project_angular</span>
       <div class="spacer"></div>
-      <a mat-raised-button routerLink="/">Home</a>
-      <a mat-raised-button routerLink="/sign_in" *ngIf="!isAuthed">Sign in</a>
-      <a mat-raised-button routerLink="/sign_up" *ngIf="!isAuthed">Sign up</a>
-      <a mat-raised-button routerLink="/" (click)="logOut()" *ngIf="isAuthed"
-        >Log out</a
+      <button mat-raised-button routerLink="/">Home</button>
+      <button mat-raised-button routerLink="/sign_in" *ngIf="!isAuthed">
+        Sign in
+      </button>
+      <button
+        mat-raised-button
+        routerLink="/create_post"
+        *ngIf="isAuthed"
+        color="warn"
       >
+        Create Post
+      </button>
+      <div
+        mat-raised-button
+        *ngIf="isAuthed && (fireAuthState | async) as user"
+      >
+        <div (click)="navigateTo('/settings')">
+          <img src="{{ user.photoURL }}" alt="i={{ user.displayName }} photo" />
+          <a> {{ user.displayName | initFullname }}</a>
+        </div>
+      </div>
+
+      <button mat-raised-button routerLink="/sign_up" *ngIf="!isAuthed">
+        Sign up
+      </button>
+      <button
+        mat-raised-button
+        routerLink="/"
+        (click)="logOut()"
+        *ngIf="isAuthed"
+      >
+        Log out
+      </button>
     </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>

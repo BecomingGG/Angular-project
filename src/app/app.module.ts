@@ -3,21 +3,24 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AngularFireModule } from '@angular/fire/compat';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { InitFullnamePipe } from './pipes';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
+import { MaterialModule } from './module';
+
 import {
   HomepageComponent,
   VerifyComponent,
   AuthComponent,
   NotfoundComponent,
   RegisterComponent,
+  RecoveryComponent,
+  SettingsComponent,
+  CreatePostComponent,
 } from './views';
 import { HeaderComponent, FooterComponent } from './shared';
-
-import { MaterialModule } from './module';
-import { SettingsComponent } from './views/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +33,9 @@ import { SettingsComponent } from './views/settings/settings.component';
     HeaderComponent,
     FooterComponent,
     SettingsComponent,
+    RecoveryComponent,
+    InitFullnamePipe,
+    CreatePostComponent,
   ],
   imports: [
     BrowserModule,

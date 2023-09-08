@@ -8,7 +8,8 @@ import {
 } from '@angular/router';
 import { GoogleAuthProvider } from '@angular/fire/auth';
 import { AlertService } from './alert.service';
-import { map } from 'rxjs';
+import { map, take, tap } from 'rxjs';
+import { IUserUpdate } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -142,6 +143,29 @@ export class AuthService {
       });
   }
 
+  public forgotPassword(email: string) {
+    this.fireAuth
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        this.alertService.displayToast(
+          'successfully Recoveried',
+          'success',
+          'green'
+        );
+        setTimeout(() => {
+          this.router.navigateByUrl('/verify');
+        }, 1500);
+      })
+      .catch((err) => {
+        this.alertService.displayToast(
+          `${err.message.slice(10) || 'Unexpected error'} `,
+          'error',
+          'red',
+          5000
+        );
+      });
+  }
+
   public isNotUserAuthed() {
     return this.fireAuthState.pipe(
       map((user) => {
@@ -155,7 +179,7 @@ export class AuthService {
     );
   }
 
-  public isUserAuthed() {
+  public isUserAuth() {
     return this.fireAuthState.pipe(
       map((user) => {
         if (user) {
@@ -166,6 +190,26 @@ export class AuthService {
         }
       })
     );
+  }
+
+  public updateInfo(userUpdate: IUserUpdate) {
+    this.fireAuth.user
+      .pipe(
+        take(1),
+        tap((user) => {
+          if (user) {
+            user.updateProfile({
+              displayName: userUpdate.displayName,
+              photoURL: userUpdate.photoURL,
+            });
+            this.alertService.displayToast('User updated', 'success', 'green');
+            setTimeout(() => {
+              this.router.navigateByUrl('/');
+            }, 1500);
+          }
+        })
+      )
+      .subscribe();
   }
 }
 
@@ -180,5 +224,5 @@ export const isUserAuth: CanActivateFn = (
   router: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
-  return inject(AuthService).isNotUserAuthed();
+  return inject(AuthService).isUserAuth();
 };

@@ -1,0 +1,22 @@
+<section class="wrapper">
+  <div class="form">
+    <div class="register">
+      <H1>Recover Password</H1>
+      <div class="form-group">
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input
+            matNativeControl
+            type="text"
+            placeholder="Enter Your Email"
+            [(ngModel)]="email"
+            (keydown.enter)="recovery()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <button mat-raised-button (click)="recovery()" [disabled]="recoveried">
+      Recover
+    </button>
+  </div>
+</section>
