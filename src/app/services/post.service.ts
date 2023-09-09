@@ -27,7 +27,7 @@ export class PostService {
   }
 
   public getPostById(id: string) {
-    return this.afs.doc(`/posts/${id}`).get();
+    return this.afs.doc(`/posts/${id}`).snapshotChanges();
   }
 
   public getAllPosts() {

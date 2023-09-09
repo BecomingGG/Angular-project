@@ -1,7 +1,7 @@
-<section class="wrapper">
-  <h1>Our Posts</h1>
+<section class="wrapper" *ngIf="post">
+  <h1>{{ post.title }}</h1>
   <section class="posts">
-    <article *ngFor="let post of posts" class="post">
+    <article class="post">
       <mat-card class="card">
         <mat-card-header>
           <img mat-card-image [src]="post.creatorImage" class="creatorImage" />
@@ -12,7 +12,6 @@
           <button mat-fab color="basic"><mat-icon>clear</mat-icon></button>
         </mat-card-header>
         <img mat-card-image [src]="post.imageURL" />
-        <h1>{{ post.title }}</h1>
         <p class="react">
           <span
             (click)="toggleReact(post)"
@@ -24,17 +23,24 @@
             <mat-icon>favorite</mat-icon> </span
           >{{ post.reactsIds.length }}
         </p>
-
         <mat-card-content>{{ post.description }}</mat-card-content>
-        <mat-card-footer>
-          <button
-            mat-raised-button
-            color="primary"
-            routerLink="/post/{{ post.id }}"
-          >
-            View Post
-          </button>
-        </mat-card-footer>
+        <div class="comments">
+          <mat-card-footer>
+            <aside class="top"></aside>
+            <aside class="bottom">
+              <mat-form-field>
+                <mat-label>Leave a comment</mat-label>
+                <textarea
+                  class="com"
+                  matInput
+                  (keydown.enter)="sendComment()"
+                  [(ngModel)]="comment"
+                ></textarea>
+                <mat-icon (click)="sendComment()">send</mat-icon>
+              </mat-form-field>
+            </aside>
+          </mat-card-footer>
+        </div>
       </mat-card>
     </article>
   </section>
@@ -44,5 +50,5 @@
   mode="indeterminate"
   style="margin: 0px auto"
   diameter="70"
-  *ngIf="posts.length === 0"
+  *ngIf="!post"
 ></mat-progress-spinner>

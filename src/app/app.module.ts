@@ -19,6 +19,7 @@ import {
   RecoveryComponent,
   SettingsComponent,
   CreatePostComponent,
+  PostComponent,
 } from './views';
 import { HeaderComponent, FooterComponent } from './shared';
 
@@ -36,6 +37,7 @@ import { HeaderComponent, FooterComponent } from './shared';
     RecoveryComponent,
     InitFullnamePipe,
     CreatePostComponent,
+    PostComponent,
   ],
   imports: [
     BrowserModule,

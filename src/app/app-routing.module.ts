@@ -5,6 +5,7 @@ import {
   CreatePostComponent,
   HomepageComponent,
   NotfoundComponent,
+  PostComponent,
   RecoveryComponent,
   RegisterComponent,
   SettingsComponent,
@@ -46,6 +47,10 @@ const routes: Routes = [
   {
     path: 'verify',
     component: VerifyComponent,
+  },
+  {
+    path: 'post/:id',
+    component: PostComponent,
   },
   {
     path: '404',

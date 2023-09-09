@@ -50,6 +50,8 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         description: this.description,
         imageURL: this.imageURL,
         creatorId: this.user.uid,
+        creatorDisplayName: this.user.displayName || '',
+        creatorImage: this.user.photoURL || '',
         createdAt: new Date().toString(),
         reactsIds: [],
         comments: [],

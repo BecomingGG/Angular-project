@@ -5,12 +5,15 @@ export interface postInterface {
   imageURL: string;
   reactsIds: string[];
   creatorId: string;
+  creatorDisplayName: string;
+  creatorImage: string;
   createdAt: string;
   comments: postCommentInterface[];
 }
 
 export interface postCommentInterface {
   id: string;
-  email: string;
+  displayName: string;
+  createdAt: string;
   comment: string;
 }
