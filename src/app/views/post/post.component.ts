@@ -1,9 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Subject, take, takeUntil, tap } from 'rxjs';
+import {
+  AdditionalInfoUser,
+  PostCommentInterface,
+  PostInterface,
+} from 'src/app/interfaces';
+import {
+  AuthService,
+  PostService,
+  AlertService,
+  UserService,
+} from 'src/app/services';
 import firebase from 'firebase/compat/app';
-import { postInterface } from 'src/app/interfaces';
-import { AlertService, AuthService, PostService } from 'src/app/services';
+import Swal from 'sweetalert2';
+import { UserRoleEnum } from 'src/app/enums';
 
 @Component({
   selector: 'app-post',
@@ -11,11 +22,13 @@ import { AlertService, AuthService, PostService } from 'src/app/services';
   styleUrls: ['./post.component.scss'],
 })
 export class PostComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-  public user!: firebase.User;
+  public isLoaded: boolean = false;
   public isAuthed: boolean = false;
-  public post!: postInterface;
+  public post!: PostInterface;
+  public user!: firebase.User;
+  private additionalUserInfo: AdditionalInfoUser | null = null;
   public comment: string = '';
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -29,7 +42,7 @@ export class PostComponent implements OnInit, OnDestroy {
     const postID = this.activatedRoute.snapshot.params['id'] as string;
 
     if (!postID || postID.length < 15) {
-      this.alertService.displayToast('incorect post id', 'error', 'red');
+      this.alertService.displayToast('Incorrect post id', 'error', 'red');
       this.router.navigateByUrl('/');
     }
 
@@ -37,32 +50,45 @@ export class PostComponent implements OnInit, OnDestroy {
       .getPostById(postID)
       .pipe(
         tap((result) => {
-          const post = result.payload.data() as postInterface;
+          const post = result.payload.data() as PostInterface;
           if (post) {
             this.post = post;
+            this.isLoaded = true;
           } else {
-            this.alertService.displayToast('Post not found', 'error', 'red');
+            this.alertService.displayToast(
+              'Not found post by this id',
+              'error',
+              'red'
+            );
             this.router.navigateByUrl('/');
           }
         }),
         takeUntil(this.destroy$)
       )
       .subscribe();
-    this.authService.fireAuthState
+
+    this.authService.userStateStream$
       .pipe(
-        tap((user) => {
-          if (user) this.user = user;
-          this.isAuthed = user ? true : false;
+        tap((fullUserData) => {
+          if (
+            fullUserData &&
+            fullUserData.user &&
+            fullUserData.additionalInfo
+          ) {
+            this.user = fullUserData.user;
+            this.additionalUserInfo = fullUserData.additionalInfo;
+          }
         }),
         takeUntil(this.destroy$)
       )
       .subscribe();
   }
+
   ngOnDestroy(): void {
     this.destroy$.next();
   }
 
-  toggleReact(post: postInterface) {
+  toggleReact(post: PostInterface) {
     if (this.user) {
       const reactIndex = post.reactsIds.findIndex((id) => id === this.user.uid);
       if (reactIndex === -1) {
@@ -74,20 +100,24 @@ export class PostComponent implements OnInit, OnDestroy {
     }
   }
 
-  getUserReactStatus(post: postInterface) {
+  getUserReactStatus(post: PostInterface) {
     const reactIndex = post.reactsIds.findIndex(
       (id) => id === (this.user?.uid || '')
     );
     return reactIndex !== -1;
   }
 
+  sendCommentInput(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.sendComment();
+    }
+  }
+
   sendComment() {
     const comment = this.comment;
-
     if (!comment) {
       return;
     }
-
     if (!this.isAuthed) {
       this.alertService.displayToast('First sign in', 'error', 'red');
       this.comment = '';
@@ -101,5 +131,55 @@ export class PostComponent implements OnInit, OnDestroy {
       comment,
     });
     this.postService.updatePost(this.post);
+  }
+
+  isAuthor(comment: PostCommentInterface, isDelete: boolean = true) {
+    return (
+      comment.id === this.user?.uid ||
+      (this.additionalUserInfo?.role === UserRoleEnum.Admin && isDelete)
+    );
+  }
+
+  deleteComment(index: number) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.alertService.displayToast('Deleted', 'success', 'green');
+        this.post.comments.splice(index, 1);
+        this.postService.updatePost(this.post);
+      }
+    });
+  }
+
+  deletePost() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.alertService.displayToast('Deleted', 'success', 'green');
+        this.router.navigateByUrl('/');
+        this.postService.deletePost(this.post);
+      }
+    });
+  }
+
+  isPostAuthor() {
+    return (
+      this.user?.uid === this.post?.creatorId ||
+      this.additionalUserInfo?.role === UserRoleEnum.Admin
+    );
   }
 }

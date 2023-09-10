@@ -1,41 +1,49 @@
 <section class="wrapper">
-  <h1>Our Posts</h1>
+  <section class="actions">
+    <button class="btn btn-primary" (click)="updateSort(true)">
+      Sort by old to new
+    </button>
+    <button class="btn btn-primary" (click)="updateSort(false)">
+      Sort by new to old
+    </button>
+  </section>
   <section class="posts">
-    <article *ngFor="let post of posts" class="post">
-      <mat-card class="card">
-        <mat-card-header>
-          <img mat-card-image [src]="post.creatorImage" class="creatorImage" />
-          <mat-card-subtitle
-            >{{ post.createdAt | date : "medium" }}, createdby
-            {{ post.creatorDisplayName }}</mat-card-subtitle
-          >
-          <button mat-fab color="basic"><mat-icon>clear</mat-icon></button>
-        </mat-card-header>
-        <img mat-card-image [src]="post.imageURL" />
-        <h1>{{ post.title }}</h1>
-        <p class="react">
-          <span
-            (click)="toggleReact(post)"
-            [ngClass]="{
-              'react-active': isAuthed,
-              reacted: getUserReactStatus(post)
-            }"
-          >
-            <mat-icon>favorite</mat-icon> </span
-          >{{ post.reactsIds.length }}
-        </p>
-
-        <mat-card-content>{{ post.description }}</mat-card-content>
-        <mat-card-footer>
-          <button
-            mat-raised-button
-            color="primary"
-            routerLink="/post/{{ post.id }}"
-          >
-            View Post
-          </button>
-        </mat-card-footer>
-      </mat-card>
+    <article *ngFor="let post of posts">
+      <div class="card text-center">
+        <div class="card-header">
+          <p>{{ post.creatorDisplayName || "No name provided" }}</p>
+        </div>
+        <img [src]="post.imageURL" class="card-img-top" alt="post image" />
+        <div class="card-body">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <p class="card-text">{{ post.description }}</p>
+          <p class="react">
+            <span
+              (click)="toggleReact(post)"
+              [ngClass]="{
+                'react-active': isAuthed,
+                reacted: getUserReactStatus(post)
+              }"
+              ><i class="fa-solid fa-heart"></i></span
+            >{{ post.reactsIds.length }}
+          </p>
+          <section class="actions">
+            <a routerLink="/post/{{ post.id }}" class="btn btn-primary"
+              >Open full post</a
+            >
+            <button
+              *ngIf="isPostAuthor(post)"
+              (click)="deletePost(post)"
+              class="btn btn-danger"
+            >
+              Delete post
+            </button>
+          </section>
+        </div>
+        <div class="card-footer text-body-secondary">
+          {{ post.createdAt | date : "medium" }}
+        </div>
+      </div>
     </article>
   </section>
 </section>

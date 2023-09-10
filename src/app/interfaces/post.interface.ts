@@ -1,17 +1,17 @@
-export interface postInterface {
+export interface PostInterface {
   id: string;
   title: string;
   description: string;
   imageURL: string;
-  reactsIds: string[];
   creatorId: string;
   creatorDisplayName: string;
   creatorImage: string;
   createdAt: string;
-  comments: postCommentInterface[];
+  reactsIds: string[];
+  comments: PostCommentInterface[];
 }
 
-export interface postCommentInterface {
+export interface PostCommentInterface {
   id: string;
   displayName: string;
   createdAt: string;

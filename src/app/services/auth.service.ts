@@ -8,13 +8,34 @@ import {
 } from '@angular/router';
 import { GoogleAuthProvider } from '@angular/fire/auth';
 import { AlertService } from './alert.service';
-import { map, take, tap } from 'rxjs';
-import { IUserUpdate } from '../interfaces';
+import { BehaviorSubject, map, take, tap } from 'rxjs';
+import {
+  AdditionalInfoUser,
+  FullUserInterface,
+  IUserUpdate,
+} from '../interfaces';
+import { UserService } from './user.service';
+import { UserRoleEnum } from '../enums';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private userState$ = new BehaviorSubject<FullUserInterface>({
+    user: null,
+    additionalInfo: null,
+  });
+
+  public userStateStream$ = this.userState$.asObservable();
+
+  get userData() {
+    return this.userState$.value;
+  }
+
+  set userData(user: FullUserInterface) {
+    this.userState$.next(user);
+  }
+
   get fireAuthState() {
     return this.fireAuth.authState;
   }
@@ -22,15 +43,63 @@ export class AuthService {
   constructor(
     private fireAuth: AngularFireAuth,
     private router: Router,
-    private alertService: AlertService
-  ) {}
+    private alertService: AlertService,
+    private userService: UserService
+  ) {
+    this.init();
+  }
 
-  public register(email: string, password: string, confirmPassword: string) {
+  private init() {
+    this.fireAuthState
+      .pipe(
+        tap((user) => {
+          if (user) {
+            this.userService
+              .getAllUsers()
+              .pipe(
+                take(1),
+                tap((users) => {
+                  users.forEach((userDoc) => {
+                    const userData =
+                      userDoc.payload.doc.data() as AdditionalInfoUser;
+                    if (userData.uid === user.uid) {
+                      this.userData = {
+                        user,
+                        additionalInfo: userData,
+                      };
+                      return;
+                    }
+                  });
+                })
+              )
+              .subscribe();
+          } else {
+            this.userData = {
+              user: null,
+              additionalInfo: null,
+            };
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  public register(email: string, password: string) {
     this.fireAuth
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
-        if (result.user && (password = confirmPassword)) {
+        if (result.user) {
           localStorage.setItem('email', result.user.email || '');
+          this.userService.createUser({
+            id: '',
+            name: result.user.displayName?.split(' ')[0] || null,
+            lastName: result.user.displayName?.split(' ')[1] || null,
+            phoneNumber: result.user.phoneNumber,
+            imageURL: result.user.photoURL,
+            email: result.user.email,
+            uid: result.user.uid,
+            role: UserRoleEnum.Default,
+          });
         }
         this.alertService.displayToast(
           'Successfully registered',
@@ -40,7 +109,7 @@ export class AuthService {
         setTimeout(() => {
           this.sendEmailForVerification(result.user);
           this.router.navigateByUrl('/sign_in');
-        });
+        }, 1500);
       })
       .catch((err) => {
         this.alertService.displayToast(
@@ -60,7 +129,7 @@ export class AuthService {
           localStorage.setItem('token', result.user.uid);
           if (result.user.emailVerified) {
             this.alertService.displayToast(
-              'successfully authorized',
+              'Successfully authorized',
               'success',
               'green'
             );
@@ -77,7 +146,7 @@ export class AuthService {
       })
       .catch((err) => {
         this.alertService.displayToast(
-          `${err.message.slice(10) || ''} `,
+          `${err.message.slice(10) || ''}`,
           'error',
           'red',
           5000
@@ -106,10 +175,39 @@ export class AuthService {
           localStorage.setItem('token', result.user.uid);
           if (result.user.emailVerified) {
             this.alertService.displayToast(
-              'successfully authorized',
+              'Successfully authorized',
               'success',
               'green'
             );
+            this.userService
+              .getAllUsers()
+              .pipe(
+                take(1),
+                tap((users) => {
+                  let isUserAlreadyCreated = false;
+                  users.forEach((userDoc) => {
+                    const userData =
+                      userDoc.payload.doc.data() as AdditionalInfoUser;
+                    if (userData.uid === result.user?.uid) {
+                      isUserAlreadyCreated = true;
+                      return;
+                    }
+                  });
+                  if (!isUserAlreadyCreated && result.user) {
+                    this.userService.createUser({
+                      id: '',
+                      name: result.user.displayName?.split(' ')[0] || null,
+                      lastName: result.user.displayName?.split(' ')[1] || null,
+                      phoneNumber: result.user.phoneNumber,
+                      imageURL: result.user.photoURL,
+                      email: result.user.email,
+                      uid: result.user.uid,
+                      role: UserRoleEnum.Default,
+                    });
+                  }
+                })
+              )
+              .subscribe();
             setTimeout(() => {
               this.router.navigateByUrl('/');
             }, 1500);
@@ -123,7 +221,7 @@ export class AuthService {
       })
       .catch((err) => {
         this.alertService.displayToast(
-          `${err.message.slice(10) || 'Unexpected error'} `,
+          `${err.message.slice(10) || 'Unexpected error'}`,
           'error',
           'red',
           5000
@@ -147,49 +245,19 @@ export class AuthService {
     this.fireAuth
       .sendPasswordResetEmail(email)
       .then(() => {
-        this.alertService.displayToast(
-          'successfully Recoveried',
-          'success',
-          'green'
-        );
+        this.alertService.displayToast('Reset email sent', 'success', 'green');
         setTimeout(() => {
           this.router.navigateByUrl('/verify');
         }, 1500);
       })
       .catch((err) => {
         this.alertService.displayToast(
-          `${err.message.slice(10) || 'Unexpected error'} `,
+          `${err.message.slice(10) || ''}`,
           'error',
           'red',
           5000
         );
       });
-  }
-
-  public isNotUserAuthed() {
-    return this.fireAuthState.pipe(
-      map((user) => {
-        if (user) {
-          this.router.navigateByUrl('/');
-          return false;
-        } else {
-          return true;
-        }
-      })
-    );
-  }
-
-  public isUserAuth() {
-    return this.fireAuthState.pipe(
-      map((user) => {
-        if (user) {
-          return true;
-        } else {
-          this.router.navigateByUrl('/');
-          return false;
-        }
-      })
-    );
   }
 
   public updateInfo(userUpdate: IUserUpdate) {
@@ -211,6 +279,32 @@ export class AuthService {
       )
       .subscribe();
   }
+
+  public isNotUserAuthed() {
+    return this.fireAuthState.pipe(
+      map((user) => {
+        if (user) {
+          this.router.navigateByUrl('/');
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+  }
+
+  public isUserAuthed() {
+    return this.fireAuthState.pipe(
+      map((user) => {
+        if (user) {
+          return true;
+        } else {
+          this.router.navigateByUrl('/');
+          return false;
+        }
+      })
+    );
+  }
 }
 
 export const isUserAuthed: CanActivateFn = (
@@ -224,5 +318,5 @@ export const isUserAuth: CanActivateFn = (
   router: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
-  return inject(AuthService).isUserAuth();
+  return inject(AuthService).isUserAuthed();
 };

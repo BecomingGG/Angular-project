@@ -1,0 +1,60 @@
+<section class="wrapper">
+  <section class="posts">
+    <table class="table" *ngIf="posts.length !== 0; else loaderPost">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Image</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let post of posts; let i = index">
+          <td>#{{ i + 1 }}</td>
+          <td>{{ post.title }}</td>
+          <td>{{ post.description }}</td>
+          <td>
+            <img [src]="post.imageURL" alt="{{ post.title }} image" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #loaderPost>
+      <div class="loader">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </ng-template>
+  </section>
+  <section class="users">
+    <table class="table" *ngIf="users.length !== 0; else loaderUser">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>name</th>
+          <th>last name</th>
+          <th>email</th>
+          <th>role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users; let i = index">
+          <td>#{{ i + 1 }}</td>
+          <td>{{ user.name || "no name provided" }}</td>
+          <td>{{ user.lastName || "no last name provided" }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #loaderUser>
+      <div class="loader">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </ng-template>
+  </section>
+</section>

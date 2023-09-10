@@ -32,5 +32,6 @@ export class SettingsComponent implements OnInit {
       displayName: this.name,
       photoURL: this.photoURL,
     });
+    this.updated = true;
   }
 }

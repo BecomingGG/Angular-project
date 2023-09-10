@@ -25,11 +25,7 @@ export class RegisterComponent {
         setTimeout(() => {
           this.registered = false;
         }, 1500);
-        this.authService.register(
-          this.email,
-          this.password,
-          this.confirmPassword
-        );
+        this.authService.register(this.email, this.password);
       } else {
         this.alertService.displayToast('Password must match', 'error', 'red');
       }

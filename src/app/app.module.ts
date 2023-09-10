@@ -20,6 +20,7 @@ import {
   SettingsComponent,
   CreatePostComponent,
   PostComponent,
+  DashboardComponent,
 } from './views';
 import { HeaderComponent, FooterComponent } from './shared';
 
@@ -38,6 +39,7 @@ import { HeaderComponent, FooterComponent } from './shared';
     InitFullnamePipe,
     CreatePostComponent,
     PostComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,

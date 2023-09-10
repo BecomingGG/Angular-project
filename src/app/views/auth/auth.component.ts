@@ -19,14 +19,11 @@ export class AuthComponent implements OnInit {
   ) {}
 
   login() {
-    this.authed = true;
-    setTimeout(() => {
-      this.authed = false;
-    }, 1500);
     if (this.email && this.password) {
+      this.authed = true;
       this.authService.login(this.email, this.password);
     } else {
-      this.alertService.displayToast('fill every input', 'error', 'red');
+      this.alertService.displayToast('Fill every input', 'error', 'red');
     }
   }
 

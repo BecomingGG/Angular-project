@@ -1,17 +1,13 @@
 <section class="wrapper" *ngIf="post">
-  <h1>{{ post.title }}</h1>
-  <section class="posts">
-    <article class="post">
-      <mat-card class="card">
-        <mat-card-header>
-          <img mat-card-image [src]="post.creatorImage" class="creatorImage" />
-          <mat-card-subtitle
-            >{{ post.createdAt | date : "medium" }}, createdby
-            {{ post.creatorDisplayName }}</mat-card-subtitle
-          >
-          <button mat-fab color="basic"><mat-icon>clear</mat-icon></button>
-        </mat-card-header>
-        <img mat-card-image [src]="post.imageURL" />
+  <section class="post">
+    <div class="card text-center">
+      <div class="card-header">
+        <p>{{ post.creatorDisplayName }}</p>
+      </div>
+      <img [src]="post.imageURL" class="card-img-top" alt="post image" />
+      <div class="card-body">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p class="card-text">{{ post.description }}</p>
         <p class="react">
           <span
             (click)="toggleReact(post)"
@@ -19,33 +15,59 @@
               'react-active': isAuthed,
               reacted: getUserReactStatus(post)
             }"
-          >
-            <mat-icon>favorite</mat-icon> </span
+            ><mat-icon>favorite</mat-icon></span
           >{{ post.reactsIds.length }}
         </p>
-        <mat-card-content>{{ post.description }}</mat-card-content>
-        <div class="comments">
-          <mat-card-footer>
-            <aside class="top"></aside>
-            <aside class="bottom">
-              <mat-form-field>
-                <mat-label>Leave a comment</mat-label>
-                <textarea
-                  class="com"
-                  matInput
-                  (keydown.enter)="sendComment()"
-                  [(ngModel)]="comment"
-                ></textarea>
-                <mat-icon (click)="sendComment()">send</mat-icon>
-              </mat-form-field>
-            </aside>
-          </mat-card-footer>
-        </div>
-      </mat-card>
-    </article>
+        <button
+          *ngIf="isPostAuthor()"
+          (click)="deletePost()"
+          class="btn btn-danger"
+        >
+          Delete post
+        </button>
+      </div>
+      <div class="card-footer text-body-secondary">
+        {{ post.createdAt | date : "medium" }}
+      </div>
+    </div>
+  </section>
+  <section class="comments">
+    <aside class="top">
+      <h3>Comment Section</h3>
+      <div class="comment" *ngFor="let comment of post.comments; let i = index">
+        <p class="form-text">
+          <span
+            ><span [ngClass]="{ author: isAuthor(comment, false) }">{{
+              comment.displayName
+            }}</span>
+            | {{ comment.createdAt | date : "medium" }}</span
+          >
+          <span
+            class="action"
+            (click)="deleteComment(i)"
+            *ngIf="isAuthor(comment)"
+            ><i class="fa-solid fa-trash"></i
+          ></span>
+        </p>
+        <p>{{ comment.comment }}</p>
+      </div>
+    </aside>
+    <aside class="bottom">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter comment"
+          (keypress)="sendCommentInput($event)"
+          [(ngModel)]="comment"
+        />
+        <span class="input-group-text" (click)="sendComment()">
+          <i class="fa-solid fa-paper-plane"></i>
+        </span>
+      </div>
+    </aside>
   </section>
 </section>
-
 <mat-progress-spinner
   mode="indeterminate"
   style="margin: 0px auto"

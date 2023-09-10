@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { map, shareReplay, tap } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { Observable, map, shareReplay, tap } from 'rxjs';
 import { AuthService } from 'src/app/services';
+import firebase from 'firebase/compat/app';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
+import { UserRoleEnum } from 'src/app/enums';
 
 @Component({
   selector: 'app-header',
@@ -12,6 +13,8 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   public isAuthed: boolean = false;
+  public isAdmin: boolean = false;
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     private authService: AuthService,
@@ -21,10 +24,11 @@ export class HeaderComponent implements OnInit {
   public fireAuthState = this.authService.fireAuthState;
 
   ngOnInit(): void {
-    this.authService.fireAuthState
+    this.authService.userStateStream$
       .pipe(
-        tap((user) => {
-          this.isAuthed = user ? true : false;
+        tap((fullUser) => {
+          this.isAuthed = fullUser.user ? true : false;
+          this.isAdmin = fullUser.additionalInfo?.role === UserRoleEnum.Admin;
           this.fireAuthState = this.authService.fireAuthState;
         })
       )
@@ -37,6 +41,7 @@ export class HeaderComponent implements OnInit {
       map((result) => result.matches),
       shareReplay()
     );
+
   logOut() {
     this.authService.logOut();
   }

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import {
   AuthComponent,
   CreatePostComponent,
+  DashboardComponent,
   HomepageComponent,
   NotfoundComponent,
   PostComponent,
@@ -11,14 +12,13 @@ import {
   SettingsComponent,
   VerifyComponent,
 } from './views';
-import { PostService, isUserAuth, isUserAuthed } from './services';
+import { isUserAuth, isUserAuthed } from './services';
 
 const routes: Routes = [
   {
     path: '',
     component: HomepageComponent,
   },
-
   {
     path: 'sign_up',
     component: RegisterComponent,
@@ -35,6 +35,10 @@ const routes: Routes = [
     canActivate: [isUserAuthed],
   },
   {
+    path: 'verify',
+    component: VerifyComponent,
+  },
+  {
     path: 'settings',
     component: SettingsComponent,
     canActivate: [isUserAuth],
@@ -45,12 +49,13 @@ const routes: Routes = [
     canActivate: [isUserAuth],
   },
   {
-    path: 'verify',
-    component: VerifyComponent,
-  },
-  {
     path: 'post/:id',
     component: PostComponent,
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [isUserAuth],
   },
   {
     path: '404',

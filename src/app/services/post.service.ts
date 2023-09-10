@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { postInterface } from '../interfaces';
+import { PostInterface } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostService {
   public readonly DEFAULT_IMAGE =
-    'https://www.eclosio.ong/wp-content/uploads/2018/08/default.png';
+    'https://citycom.ge/wp-content/uploads/2022/12/placeholder-2.png';
 
   constructor(private afs: AngularFirestore) {}
 
-  public createPost(post: postInterface) {
+  public createPost(post: PostInterface) {
     return this.afs
       .collection('/posts')
       .add(post)
@@ -34,11 +34,11 @@ export class PostService {
     return this.afs.collection('/posts').snapshotChanges();
   }
 
-  public updatePost(post: postInterface) {
+  public updatePost(post: PostInterface) {
     return this.afs.doc(`/posts/${post.id}`).update(post);
   }
 
-  public deletePosts(post: postInterface) {
-    return this.afs.doc(`/post/${post.id}`).delete();
+  public deletePost(post: PostInterface) {
+    return this.afs.doc(`/posts/${post.id}`).delete();
   }
 }

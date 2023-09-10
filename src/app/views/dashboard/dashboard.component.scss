@@ -1,0 +1,19 @@
+.wrapper {
+  padding: 50px 0px;
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 25px;
+  place-items: center;
+
+  section.users,
+  section.posts {
+    width: 100%;
+    max-width: 1050px;
+
+    img {
+      height: 250px;
+      width: 250px;
+      object-fit: cover;
+    }
+  }
+}

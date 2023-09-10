@@ -1,10 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Subject, take, takeUntil, tap } from 'rxjs';
+import { AdditionalInfoUser, PostInterface } from 'src/app/interfaces';
+import {
+  AuthService,
+  PostService,
+  AlertService,
+  UserService,
+} from 'src/app/services';
 import firebase from 'firebase/compat/app';
-import { Subject, takeUntil, tap } from 'rxjs';
-import { postInterface } from 'src/app/interfaces';
-
-import { AlertService, AuthService, PostService } from 'src/app/services';
+import Swal from 'sweetalert2';
+import { UserRoleEnum } from 'src/app/enums';
 
 @Component({
   selector: 'app-homepage',
@@ -12,17 +17,16 @@ import { AlertService, AuthService, PostService } from 'src/app/services';
   styleUrls: ['./homepage.component.scss'],
 })
 export class HomepageComponent implements OnInit, OnDestroy {
-  public posts: postInterface[] = [];
+  public posts: PostInterface[] = [];
   public user!: firebase.User;
+  private additionalUserInfo: AdditionalInfoUser | null = null;
   public isAuthed: boolean = false;
-
   private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
     private postService: PostService,
-    private alertService: AlertService,
-    private router: Router
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -32,17 +36,25 @@ export class HomepageComponent implements OnInit, OnDestroy {
         tap((result) => {
           this.posts = [];
           result.forEach((item) => {
-            this.posts.push(item.payload.doc.data() as postInterface);
+            this.posts.push(item.payload.doc.data() as PostInterface);
           });
+          this.posts = this.sortBy(true);
         }),
         takeUntil(this.destroy$)
       )
       .subscribe();
-    this.authService.fireAuthState
+
+    this.authService.userStateStream$
       .pipe(
-        tap((user) => {
-          if (user) this.user = user;
-          this.isAuthed = user ? true : false;
+        tap((fullUserData) => {
+          if (
+            fullUserData &&
+            fullUserData.user &&
+            fullUserData.additionalInfo
+          ) {
+            this.user = fullUserData.user;
+            this.additionalUserInfo = fullUserData.additionalInfo;
+          }
         }),
         takeUntil(this.destroy$)
       )
@@ -53,7 +65,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
     this.destroy$.next();
   }
 
-  toggleReact(post: postInterface) {
+  toggleReact(post: PostInterface) {
     if (this.user) {
       const reactIndex = post.reactsIds.findIndex((id) => id === this.user.uid);
       if (reactIndex === -1) {
@@ -65,10 +77,46 @@ export class HomepageComponent implements OnInit, OnDestroy {
     }
   }
 
-  getUserReactStatus(post: postInterface) {
+  getUserReactStatus(post: PostInterface) {
     const reactIndex = post.reactsIds.findIndex(
       (id) => id === (this.user?.uid || '')
     );
     return reactIndex !== -1;
+  }
+
+  sortBy(isAsc: boolean = true) {
+    return this.posts.sort((first, second) => {
+      const firstTime = new Date(first.createdAt).getTime();
+      const secondTime = new Date(second.createdAt).getTime();
+      return isAsc ? firstTime - secondTime : secondTime - firstTime;
+    });
+  }
+
+  updateSort(direction: boolean) {
+    this.posts = this.sortBy(direction);
+  }
+
+  deletePost(post: PostInterface) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.alertService.displayToast('Deleted', 'success', 'green');
+        this.postService.deletePost(post);
+      }
+    });
+  }
+
+  isPostAuthor(post: PostInterface) {
+    return (
+      post.creatorId === this.user?.uid ||
+      this.additionalUserInfo?.role === UserRoleEnum.Admin
+    );
   }
 }

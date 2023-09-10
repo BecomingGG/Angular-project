@@ -28,10 +28,12 @@ export class CreatePostComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.imageURL = this.postService.DEFAULT_IMAGE;
-    this.authService.fireAuthState
+    this.authService.userStateStream$
       .pipe(
-        tap((user) => {
-          if (user) this.user = user;
+        tap((fullUserData) => {
+          if (fullUserData.user) {
+            this.user = fullUserData.user;
+          }
         }),
         takeUntil(this.destroy$)
       )
