@@ -15,8 +15,8 @@
               'react-active': isAuthed,
               reacted: getUserReactStatus(post)
             }"
-            ><mat-icon>favorite</mat-icon></span
-          >{{ post.reactsIds.length }}
+            ><mat-icon>favorite</mat-icon>{{ post.reactsIds.length }}</span
+          >
         </p>
         <button
           *ngIf="isPostAuthor()"
@@ -58,11 +58,11 @@
           type="text"
           class="form-control"
           placeholder="Enter comment"
-          (keypress)="sendCommentInput($event)"
+          (keydown.enter)="sendComment()"
           [(ngModel)]="comment"
         />
         <span class="input-group-text" (click)="sendComment()">
-          <i class="fa-solid fa-paper-plane"></i>
+          <mat-icon>send</mat-icon>
         </span>
       </div>
     </aside>

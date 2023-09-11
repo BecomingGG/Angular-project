@@ -22,7 +22,6 @@ import { UserRoleEnum } from 'src/app/enums';
   styleUrls: ['./post.component.scss'],
 })
 export class PostComponent implements OnInit, OnDestroy {
-  public isLoaded: boolean = false;
   public isAuthed: boolean = false;
   public post!: PostInterface;
   public user!: firebase.User;
@@ -53,7 +52,6 @@ export class PostComponent implements OnInit, OnDestroy {
           const post = result.payload.data() as PostInterface;
           if (post) {
             this.post = post;
-            this.isLoaded = true;
           } else {
             this.alertService.displayToast(
               'Not found post by this id',
@@ -107,23 +105,18 @@ export class PostComponent implements OnInit, OnDestroy {
     return reactIndex !== -1;
   }
 
-  sendCommentInput(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      this.sendComment();
-    }
-  }
-
   sendComment() {
     const comment = this.comment;
     if (!comment) {
       return;
     }
-    if (!this.isAuthed) {
+    if (this.isAuthed) {
       this.alertService.displayToast('First sign in', 'error', 'red');
       this.comment = '';
       return;
     }
     this.comment = '';
+
     this.post.comments.push({
       id: this.user.uid,
       displayName: this.user.displayName || this.user.email || '',

@@ -1,4 +1,4 @@
-@mixin flex-center($gap: 0px) {
+@mixin flex-center($gap: 0px, $flex-wrap: "wrap") {
   display: flex;
   justify-content: center;
   align-items: center;

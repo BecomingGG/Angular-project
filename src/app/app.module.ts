@@ -22,7 +22,11 @@ import {
   PostComponent,
   DashboardComponent,
 } from './views';
-import { HeaderComponent, FooterComponent } from './shared';
+import {
+  HeaderComponent,
+  FooterComponent,
+  GlobalChatComponent,
+} from './shared';
 
 @NgModule({
   declarations: [
@@ -40,6 +44,7 @@ import { HeaderComponent, FooterComponent } from './shared';
     CreatePostComponent,
     PostComponent,
     DashboardComponent,
+    GlobalChatComponent,
   ],
   imports: [
     BrowserModule,

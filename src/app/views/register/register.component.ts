@@ -10,7 +10,6 @@ import { AlertService, AuthService } from 'src/app/services';
 export class RegisterComponent {
   email: string = '';
   password: string = '';
-  confirmPassword: string = '';
   registered: boolean = false;
 
   constructor(
@@ -19,8 +18,8 @@ export class RegisterComponent {
   ) {}
 
   register() {
-    if (this.email && this.password && this.confirmPassword) {
-      if (this.password === this.confirmPassword) {
+    if (this.email && this.password) {
+      if (this.password) {
         this.registered = true;
         setTimeout(() => {
           this.registered = false;

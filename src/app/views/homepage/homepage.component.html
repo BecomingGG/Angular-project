@@ -11,7 +11,7 @@
     <article *ngFor="let post of posts">
       <div class="card text-center">
         <div class="card-header">
-          <p>{{ post.creatorDisplayName || "No name provided" }}</p>
+          <p>Author: {{ post.creatorDisplayName || "No name provided" }}</p>
         </div>
         <img [src]="post.imageURL" class="card-img-top" alt="post image" />
         <div class="card-body">
@@ -24,8 +24,8 @@
                 'react-active': isAuthed,
                 reacted: getUserReactStatus(post)
               }"
-              ><i class="fa-solid fa-heart"></i></span
-            >{{ post.reactsIds.length }}
+              ><mat-icon>favorite</mat-icon>{{ post.reactsIds.length }}</span
+            >
           </p>
           <section class="actions">
             <a routerLink="/post/{{ post.id }}" class="btn btn-primary"
