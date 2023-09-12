@@ -4,6 +4,7 @@ import { AdditionalInfoUser, CommentsInterface } from 'src/app/interfaces';
 import { AlertService, AuthService } from 'src/app/services';
 import firebase from 'firebase/compat/app';
 import { CommentsService } from 'src/app/services/comments.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-global-chat',
@@ -59,7 +60,7 @@ export class GlobalChatComponent implements OnInit, OnDestroy {
   createComment() {
     if (this.comment) {
       this.commentsService.createComment({
-        id: '',
+        id: this.user.uid,
         comments: this.comment,
         creatorId: this.user.uid,
         createdAt: new Date().toString(),
@@ -79,5 +80,15 @@ export class GlobalChatComponent implements OnInit, OnDestroy {
 
   updateSort(direction: boolean) {
     this.comments = this.sortBy(direction);
+  }
+
+  isAuthor(comment: CommentsInterface) {
+    return comment.id === this.user?.uid;
+  }
+
+  deleteComment(index: number) {
+    this.comments.splice(index, 1);
+    this.commentsService.deleteComments(this.comments[index]);
+    this.commentsService.updateComments(this.comments[index]);
   }
 }

@@ -3,6 +3,10 @@
   position: fixed;
   .mat-sidenav-content {
     .mat-toolbar {
+      .logo {
+        cursor: pointer;
+        user-select: none;
+      }
       div {
         list-style: none;
         div {

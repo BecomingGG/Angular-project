@@ -3,14 +3,19 @@
     <h1>Global Chat</h1>
   </section>
   <section class="comments">
-    <aside class="top" *ngFor="let comment of comments">
+    <aside class="top" *ngFor="let comment of comments; let i = index">
       <div class="comment">
         <p class="form-text">
           <span
             ><span>{{ comment.creatorDisplayName }}</span> |
             {{ comment.createdAt | date : "medium" }}</span
           >
-          <span class="action"><i class="fa-solid fa-trash"></i></span>
+          <span
+            class="action"
+            *ngIf="isAuthor(comment)"
+            (click)="deleteComment(i)"
+            ><mat-icon>delete</mat-icon></span
+          >
         </p>
         <p>{{ comment.comments }}</p>
       </div>
@@ -25,7 +30,6 @@
         [(ngModel)]="comment"
         (keydown.enter)="createComment()"
       />
-      <button mat-button (click)="updateSort(false)">SORT CHAT</button>
       <span class="input-group-text" (click)="createComment()">
         <mat-icon>send</mat-icon>
       </span>

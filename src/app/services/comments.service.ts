@@ -30,7 +30,11 @@ export class CommentsService {
     return this.afs.collection('/comments').snapshotChanges();
   }
 
-  public deleteComments() {
-    return this.afs.doc(`/comments/${this.getCommentById}`).delete();
+  public updateComments(comments: CommentsInterface) {
+    return this.afs.doc(`/comments/${comments.id}`).update(comments);
+  }
+
+  public deleteComments(comments: CommentsInterface) {
+    return this.afs.doc(`/comments/${comments.id}`).delete();
   }
 }
