@@ -7,7 +7,7 @@
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="false"
   >
-    <mat-toolbar color="primary">Menu</mat-toolbar>
+    <mat-toolbar color="primary" routerLink="/">Menu</mat-toolbar>
     <mat-nav-list>
       <a mat-raised-button routerLink="/">Home</a>
     </mat-nav-list>
@@ -23,10 +23,8 @@
       >
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <button routerLink="" mat-icon-button>
-        <mat-icon>home</mat-icon>
-      </button>
-      <span>Project_angular</span>
+
+      <span routerLink="/"><mat-icon>home</mat-icon> Project_angular</span>
       <div class="spacer"></div>
       <button mat-raised-button routerLink="/">Home</button>
       <div *ngIf="isAuthed && isAdmin">
@@ -49,7 +47,7 @@
       >
         <div (click)="navigateTo('/settings')">
           <img src="{{ user.photoURL }}" alt="i={{ user.displayName }} photo" />
-          <a> {{ user.displayName | initFullname }}</a>
+          <a> {{ user.displayName }}</a>
         </div>
       </div>
 

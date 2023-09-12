@@ -46,6 +46,7 @@ export class GlobalChatComponent implements OnInit, OnDestroy {
           result.forEach((item) => {
             this.comments.push(item.payload.doc.data() as CommentsInterface);
           });
+          this.updateSort(false);
         }),
         takeUntil(this.destroy$)
       )
