@@ -15,6 +15,7 @@ export class CommentsService {
       .then(
         (result) => {
           comment.id = result.id;
+          this.updateComments(comment);
         },
         (err) => {
           console.log(err);
@@ -23,7 +24,7 @@ export class CommentsService {
   }
 
   public getCommentById(id: string) {
-    return this.afs.doc(`/comments/${id}`).get();
+    return this.afs.doc(`/comments/${id}`).snapshotChanges();
   }
 
   public getAllComments() {

@@ -60,12 +60,13 @@ export class GlobalChatComponent implements OnInit, OnDestroy {
   createComment() {
     if (this.comment) {
       this.commentsService.createComment({
-        id: this.user.uid,
+        id: '',
         comments: this.comment,
         creatorId: this.user.uid,
         createdAt: new Date().toString(),
         creatorDisplayName: this.user.displayName || '',
       });
+
       this.comment = '';
     }
   }
@@ -83,12 +84,18 @@ export class GlobalChatComponent implements OnInit, OnDestroy {
   }
 
   isAuthor(comment: CommentsInterface) {
-    return comment.id === this.user?.uid;
+    return comment.creatorId === this.user?.uid;
   }
 
-  deleteComment(index: number) {
-    this.comments.splice(index, 1);
-    this.commentsService.deleteComments(this.comments[index]);
-    this.commentsService.updateComments(this.comments[index]);
+  deleteComment(comment: CommentsInterface) {
+    this.commentsService.deleteComments(comment);
+  }
+  public hide: boolean = false;
+  toggle() {
+    if (this.hide === false) {
+      this.hide = true;
+    } else {
+      this.hide = false;
+    }
   }
 }

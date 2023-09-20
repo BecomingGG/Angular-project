@@ -1,9 +1,13 @@
-<div class="wrapper">
+<mat-icon class="chat" (click)="toggle()">message</mat-icon>
+<div class="wrapper" *ngIf="hide">
   <section class="header">
-    <h1>Global Chat</h1>
+    <div>
+      <h1>Global Chat</h1>
+      <mat-icon (click)="toggle()">clear</mat-icon>
+    </div>
   </section>
   <section class="comments">
-    <aside class="top" *ngFor="let comment of comments; let i = index">
+    <aside class="top" *ngFor="let comment of comments">
       <div class="comment">
         <p class="form-text">
           <span
@@ -13,7 +17,7 @@
           <span
             class="action"
             *ngIf="isAuthor(comment)"
-            (click)="deleteComment(i)"
+            (click)="deleteComment(comment)"
             ><mat-icon>delete</mat-icon></span
           >
         </p>
