@@ -1,3 +1,5 @@
+@use "../../../mixins" as *;
+
 section.wrapper {
   width: 100%;
   min-height: calc(100vh - 90px);
@@ -13,5 +15,13 @@ section.wrapper {
     row-gap: 20px;
     padding: 25px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 7px;
+  }
+}
+
+@include sm {
+  section.wrapper {
+    div.form {
+      max-width: 250px;
+    }
   }
 }

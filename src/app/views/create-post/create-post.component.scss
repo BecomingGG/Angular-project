@@ -1,3 +1,4 @@
+@use "../../../mixins" as *;
 section.wrapper {
   width: 100%;
   min-height: calc(100vh - 90px);
@@ -44,6 +45,45 @@ section.wrapper {
         img {
           max-height: 315px;
           object-fit: cover;
+        }
+      }
+    }
+  }
+}
+
+@include xl {
+  section.wrapper {
+    div.form {
+      max-width: 900px;
+    }
+  }
+}
+
+@include lg {
+  section.wrapper {
+    div.form {
+      max-width: 700px;
+      place-items: start;
+      .wrap {
+        grid-template-columns: max-content;
+        row-gap: 30px;
+        max-width: 300px;
+      }
+    }
+  }
+}
+
+@include md {
+  section.wrapper {
+    div.form {
+      max-width: 300px;
+      .wrap {
+        max-width: 200px;
+        .left {
+          width: 50%;
+        }
+        .right {
+          width: 50%;
         }
       }
     }

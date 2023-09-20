@@ -4,13 +4,20 @@
     class="sidenav"
     fixedInViewport
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'push' : 'side'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="false"
   >
     <mat-toolbar color="primary" routerLink="/">Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-raised-button routerLink="/" (click)="drawer.toggle()">Home</a>
       <a
+        color="primary"
+        mat-raised-button
+        routerLink="/"
+        (click)="drawer.toggle()"
+        >Home</a
+      >
+      <a
+        color="primary"
         mat-raised-button
         routerLink="/sign_up"
         *ngIf="!isAuthed"
@@ -18,6 +25,7 @@
         >Sign up</a
       >
       <a
+        color="primary"
         mat-raised-button
         routerLink="/sign_in"
         *ngIf="!isAuthed"
@@ -25,6 +33,7 @@
         >Sign in</a
       >
       <a
+        color="primary"
         mat-raised-button
         routerLink="/create_post"
         *ngIf="isAuthed"
@@ -32,6 +41,15 @@
         >Create post</a
       >
       <a
+        color="primary"
+        mat-raised-button
+        routerLink="/settings"
+        (click)="drawer.toggle()"
+        *ngIf="isAuthed"
+        >Settings</a
+      >
+      <a
+        color="primary"
         mat-raised-button
         mat-raised-button
         routerLink="/dashboard"
@@ -39,6 +57,15 @@
         (click)="drawer.toggle()"
         >Dashboard</a
       >
+      <button
+        color="warn"
+        mat-raised-button
+        routerLink="/"
+        (click)="logOut()"
+        *ngIf="isAuthed"
+      >
+        Log out
+      </button>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -57,14 +84,24 @@
         ><mat-icon>eco</mat-icon> Project_angular</span
       >
       <div class="spacer"></div>
-      <button mat-raised-button routerLink="/">Home</button>
+      <button class="hideNavItems" mat-raised-button routerLink="/">
+        Home
+      </button>
       <div *ngIf="isAuthed && isAdmin">
-        <button mat-raised-button routerLink="/dashboard">dashboard</button>
+        <button class="hideNavItems" mat-raised-button routerLink="/dashboard">
+          dashboard
+        </button>
       </div>
-      <button mat-raised-button routerLink="/sign_in" *ngIf="!isAuthed">
+      <button
+        class="hideNavItems"
+        mat-raised-button
+        routerLink="/sign_in"
+        *ngIf="!isAuthed"
+      >
         Sign in
       </button>
       <button
+        class="hideNavItems"
         mat-raised-button
         routerLink="/create_post"
         *ngIf="isAuthed"
@@ -76,16 +113,22 @@
         mat-raised-button
         *ngIf="isAuthed && (fireAuthState | async) as user"
       >
-        <div (click)="navigateTo('/settings')">
+        <div class="hideNavItems" (click)="navigateTo('/settings')">
           <img src="{{ user.photoURL }}" alt="i={{ user.displayName }} photo" />
           <a> {{ user.displayName }}</a>
         </div>
       </div>
 
-      <button mat-raised-button routerLink="/sign_up" *ngIf="!isAuthed">
+      <button
+        class="hideNavItems"
+        mat-raised-button
+        routerLink="/sign_up"
+        *ngIf="!isAuthed"
+      >
         Sign up
       </button>
       <button
+        class="hideNavItems"
         mat-raised-button
         routerLink="/"
         (click)="logOut()"

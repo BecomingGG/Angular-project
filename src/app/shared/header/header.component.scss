@@ -1,6 +1,24 @@
+@use "../../../mixins" as *;
+
+@include lg {
+  .hideNavItems {
+    display: none;
+  }
+}
+
 .sidenav-container {
   width: 100%;
   position: fixed;
+  z-index: 11;
+  .mat-sidenav {
+    .mat-mdc-list-base {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      row-gap: 20px;
+      place-items: center;
+    }
+  }
   .mat-sidenav-content {
     .mat-toolbar {
       .logo {
@@ -44,4 +62,10 @@
 
 .spacer {
   flex: 1 1 auto;
+}
+
+@include md {
+  .hideNavItems {
+    display: none !important;
+  }
 }

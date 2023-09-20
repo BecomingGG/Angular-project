@@ -57,3 +57,28 @@
     }
   }
 }
+
+@include sm {
+  .wrapper {
+    .posts {
+      .card {
+        max-width: 400px;
+        .btn {
+          font-size: 0.8rem;
+        }
+        .card-title {
+          font-size: 1.2rem;
+          font-weight: bold;
+          line-height: 1.2rem;
+        }
+        .card-text {
+          font-size: 0.6rem;
+        }
+        img {
+          height: 150px;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}

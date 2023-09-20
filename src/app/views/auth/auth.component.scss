@@ -1,3 +1,5 @@
+@use "../../../mixins" as *;
+
 section.wrapper {
   width: 100%;
   min-height: calc(100vh - 90px);
@@ -20,6 +22,15 @@ section.wrapper {
     }
   }
 }
+
+@include sm {
+  section.wrapper {
+    div.form {
+      max-width: 250px;
+    }
+  }
+}
+
 .google-btn {
   margin: 25px;
   width: 80%;
